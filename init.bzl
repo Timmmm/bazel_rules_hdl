@@ -15,7 +15,7 @@
 """ initializes the bazel_rules_hdl workspace """
 
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-load("@rules_python//python:pip.bzl", "pip_install")
+load("@rules_python//python:pip.bzl", "pip_parse")
 load("//dependency_support/boost:init_boost.bzl", "init_boost")
 load("//dependency_support/pybind11:init_pybind11.bzl", "init_pybind11")
 
@@ -26,26 +26,33 @@ def init(python_interpreter = None, python_interpreter_target = None):
     must call `init` to allow @bazel_rules_hdl to set itself up.
 
     `python_interpreter` and `python_interpreter_target` are passed to
-    @bazel_rules_hdl's instance of `pip_install`. They can normally be set to
+    @bazel_rules_hdl's instance of `pip_parse`. They can normally be set to
     the default None value, but if the outside workspace has a custom Python
     toolchain configured, these must be set, otherwise @bazel_rules_hdl will
     not use the right Python toolchain when installing pip dependencies.
 
     Args:
       python_interpreter: Path to external Python interpreter to use with
-      `pip_install`. This can be an absolute path or relative to the host's
+      `pip_parse`. This can be an absolute path or relative to the host's
       `PATH` environment variable.
       python_interpreter_target: Bazel target of a Python interpreter to build
-      to use with `pip_install`. Using `python_interpreter_target` makes it
+      to use with `pip_parse`. Using `python_interpreter_target` makes it
       possible to have a hermetic Python toolchain. `python_interpreter_target`
       takes precedence over `python_interpreter` if both are set.
     """
-    pip_install(
+    pip_parse(
         name = "rules_hdl_pip_deps",
-        requirements = "@rules_hdl//dependency_support:pip_requirements.txt",
+        requirements_lock = "@rules_hdl//dependency_support:pip_requirements_lock.txt",
         python_interpreter = python_interpreter,
         python_interpreter_target = python_interpreter_target,
     )
+
+    # You must add these to your WORKSPACE after calling `init()`. Unfortunately
+    # Bazel does not support load() inside functions. The long term solution
+    # is probably Bzlmod.
+    #
+    # load("@rules_hdl_pip_deps//:requirements.bzl", "install_deps")
+    # install_deps()
 
     init_boost()
     init_pybind11()
