@@ -40,7 +40,10 @@ TCL_COPTS = [
     "-DHAVE_STRUCT_STAT64=1",
     "-DHAVE_OPEN64=1",
     "-DHAVE_LSEEK64=1",
-    "-DHAVE_TYPE_OFF64_T=1",
+    # Don't have this on Mac.
+    # "-DHAVE_TYPE_OFF64_T=1",
+    # Do have this (and it is required to avoid #including statfs.h which doesn't exist.
+    "-DHAVE_STRUCT_STAT_ST_BLKSIZE=1",
     "-DHAVE_GETCWD=1",
     "-DHAVE_OPENDIR=1",
     "-DHAVE_STRSTR=1",
