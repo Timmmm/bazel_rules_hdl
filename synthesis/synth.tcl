@@ -57,3 +57,6 @@ write_verilog $output
 
 # print stats
 stat -liberty $liberty
+
+# Generate graphviz diagram.
+show -format dot -prefix $::env(DOT_PREFIX) -stretch
