@@ -60,3 +60,6 @@ stat -liberty $liberty
 
 # Generate graphviz diagram.
 show -format dot -prefix $::env(DOT_PREFIX) -stretch
+
+# Generate JSON for better plotting
+write_json $::env(JSON_FILE)

@@ -96,6 +96,7 @@ def _synthesize_design_impl(ctx):
     args.add_all("-c", [synth_tcl])  # run synthesis tcl script
 
     dot_file = ctx.actions.declare_file("{}.dot".format(ctx.attr.top_module))
+    json_file = ctx.actions.declare_file("{}.json".format(ctx.attr.top_module))
 
     env = {
         "FLIST": verilog_flist.path,
@@ -106,13 +107,14 @@ def _synthesize_design_impl(ctx):
         "YOSYS_DATDIR": yosys_runfiles_dir + "/at_clifford_yosys/techlibs/",
         "ABC": yosys_runfiles_dir + "/edu_berkeley_abc/abc",
         "DOT_PREFIX": dot_file.path.removesuffix(".dot"), # Otherwise it writes to foo.dot.dot
+        "JSON_FILE": json_file.path,
     }
 
     if ctx.attr.target_clock_period_pico_seconds:
         env["CLOCK_PERIOD"] = str(ctx.attr.target_clock_period_pico_seconds)
 
     ctx.actions.run(
-        outputs = [output_file, log_file, dot_file],
+        outputs = [output_file, log_file, dot_file, json_file],
         inputs = inputs + tool_inputs.to_list() + [default_liberty_file],
         arguments = [args],
         executable = ctx.executable.yosys_tool,
