@@ -18,6 +18,15 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 def pybind11():
+    # Updated version but it makes a Python crypography wheel fail to build.
+    # maybe(
+    #     http_archive,
+    #     name = "pybind11_bazel",
+    #     strip_prefix = "pybind11_bazel-faf56fb3df11287f26dbc66fdedf60a2fc2c6631",
+    #     urls = ["https://github.com/pybind/pybind11_bazel/archive/faf56fb3df11287f26dbc66fdedf60a2fc2c6631.tar.gz"],  # 2022-11-02
+    #     sha256 = "a2b107b06ffe1049696e132d39987d80e24d73b131d87f1af581c2cb271232f8",
+    # )
+
     maybe(
         http_archive,
         name = "pybind11_bazel",
